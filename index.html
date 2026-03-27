@@ -123,14 +123,8 @@
                     <option value="leptospirosis_case">Leptospirosis case</option>
                   </select>
                 </label>
-                <label>
-                  Latitude
-                  <input id="latitude" name="latitude" type="number" step="0.000001" required />
-                </label>
-                <label>
-                  Longitude
-                  <input id="longitude" name="longitude" type="number" step="0.000001" required />
-                </label>
+                <input id="latitude" name="latitude" type="hidden" required />
+                <input id="longitude" name="longitude" type="hidden" required />
                 <label>
                   Date and time seen
                   <input id="sightedAt" name="sightedAt" type="datetime-local" required />
@@ -181,10 +175,9 @@
                 <button class="primary-button" type="submit">Save report</button>
               </form>
               <p class="small-note">
-                Reports are anonymous by default. Coordinates can be selected by
-                clicking the map or typed manually for precise reporting. Dog
-                names are collected for leptospirosis case reports to help spot
-                potential duplicates.
+                Reports are anonymous by default. Click on the map to choose the
+                exact location for your report. Dog names are collected for
+                leptospirosis case reports to help spot potential duplicates.
               </p>
               <div id="appStatus" class="small-note app-status" aria-live="polite"></div>
             </section>
