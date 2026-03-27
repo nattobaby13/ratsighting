@@ -203,6 +203,7 @@ label,
 .sidebar {
   display: grid;
   gap: 20px;
+  grid-template-rows: auto minmax(520px, 1fr);
 }
 
 .section-heading {
@@ -388,8 +389,14 @@ select:focus {
 .report-list {
   display: grid;
   gap: 12px;
-  max-height: 420px;
+  max-height: 680px;
+  min-height: 520px;
   overflow: auto;
+}
+
+.feed-panel {
+  display: grid;
+  align-content: start;
 }
 
 .report-card {
