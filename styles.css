@@ -203,7 +203,12 @@ label,
 .sidebar {
   display: grid;
   gap: 20px;
-  grid-template-rows: auto minmax(520px, 1fr);
+  grid-template-rows: auto 1fr;
+}
+
+.info-stack {
+  display: grid;
+  gap: 24px;
 }
 
 .section-heading {
