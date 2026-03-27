@@ -228,6 +228,28 @@ label,
   align-items: center;
 }
 
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-control {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.filter-control select {
+  width: auto;
+  min-width: 130px;
+}
+
 .map-legend {
   display: flex;
   flex-wrap: wrap;
@@ -574,5 +596,9 @@ select:focus {
   .section-heading.compact {
     flex-direction: column;
     align-items: start;
+  }
+
+  .map-toolbar {
+    justify-content: flex-start;
   }
 }

@@ -76,8 +76,18 @@
                 <p class="eyebrow">Interactive Map</p>
                 <h2>Track sightings across Singapore</h2>
               </div>
-              <div class="map-instructions">
-                Click anywhere on the map to capture detailed coordinates.
+              <div class="map-toolbar">
+                <label class="filter-control">
+                  <span>Show</span>
+                  <select id="timeFilter" name="timeFilter">
+                    <option value="this_week">This week</option>
+                    <option value="this_year">This year</option>
+                    <option value="all_time" selected>All time</option>
+                  </select>
+                </label>
+                <div class="map-instructions">
+                  Click anywhere on the map to capture detailed coordinates.
+                </div>
               </div>
             </div>
             <div class="map-legend" aria-label="Map legend">

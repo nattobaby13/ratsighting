@@ -7,6 +7,7 @@ const form = document.getElementById("reportForm");
 const jumpToFormButton = document.getElementById("jumpToForm");
 const reportList = document.getElementById("reportList");
 const reportTypeInput = document.getElementById("reportType");
+const timeFilterInput = document.getElementById("timeFilter");
 const latitudeInput = document.getElementById("latitude");
 const longitudeInput = document.getElementById("longitude");
 const sightedAtInput = document.getElementById("sightedAt");
@@ -54,6 +55,7 @@ let selectedMarker = null;
 let reports = [];
 let possibleDuplicates = [];
 let activeDataMode = "local";
+let activeTimeFilter = "all_time";
 
 function loadReportsFromLocalStorage() {
   try {
@@ -183,6 +185,28 @@ function reportsInLastSevenDays() {
   return reports.filter((report) => new Date(report.sightedAt).getTime() >= sevenDaysAgo).length;
 }
 
+function getFilteredReports() {
+  const now = Date.now();
+
+  return reports.filter((report) => {
+    const reportTime = new Date(report.sightedAt).getTime();
+    if (!Number.isFinite(reportTime)) {
+      return false;
+    }
+
+    if (activeTimeFilter === "this_week") {
+      return reportTime >= now - 7 * 24 * 60 * 60 * 1000;
+    }
+
+    if (activeTimeFilter === "this_year") {
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
+      return reportTime >= startOfYear;
+    }
+
+    return true;
+  });
+}
+
 function buildPopup(report) {
   const area = report.locationName ? escapeHtml(report.locationName) : "Unnamed area";
   const typeLabel =
@@ -213,7 +237,7 @@ function buildPopup(report) {
 function renderMapMarkers() {
   markerLayer.clearLayers();
 
-  reports.forEach((report) => {
+  getFilteredReports().forEach((report) => {
     const isCase = report.reportType === "leptospirosis_case";
     const icon = L.divIcon({
       className: "",
@@ -234,16 +258,18 @@ function renderMapMarkers() {
 }
 
 function renderReportFeed() {
-  if (!reports.length) {
+  const filteredReports = getFilteredReports();
+
+  if (!filteredReports.length) {
     reportList.innerHTML = `
       <div class="empty-state">
-        No sightings logged yet. Add the first report to start building community awareness.
+        No reports match this time filter yet.
       </div>
     `;
     return;
   }
 
-  const cards = [...reports]
+  const cards = [...filteredReports]
     .sort((left, right) => new Date(right.sightedAt) - new Date(left.sightedAt))
     .map((report) => {
       const title = report.locationName ? escapeHtml(report.locationName) : "Unnamed area";
@@ -278,7 +304,7 @@ function renderReportFeed() {
 }
 
 function renderStats() {
-  totalReportsEl.textContent = String(reports.length);
+  totalReportsEl.textContent = String(getFilteredReports().length);
   recentReportsEl.textContent = String(reportsInLastSevenDays());
 }
 
@@ -456,6 +482,11 @@ jumpToFormButton.addEventListener("click", () => {
 reportTypeInput.addEventListener("change", () => {
   syncCaseFields();
   syncDuplicateWarning();
+});
+
+timeFilterInput.addEventListener("change", () => {
+  activeTimeFilter = timeFilterInput.value;
+  renderAll();
 });
 
 dogNameInput.addEventListener("input", syncDuplicateWarning);
