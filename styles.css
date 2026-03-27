@@ -190,7 +190,7 @@ label,
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.8fr);
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .info-grid {
@@ -203,6 +203,12 @@ label,
 .sidebar {
   display: grid;
   gap: 20px;
+}
+
+#reportPanel {
+  height: 100%;
+  display: grid;
+  align-content: start;
 }
 
 .info-stack {
