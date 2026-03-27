@@ -1,4 +1,4 @@
 window.RATWATCH_CONFIG = {
-  supabaseUrl: "YOUR_SUPABASE_URL",
-  supabaseKey: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY",
+  supabaseUrl: "https://ztpytrgwmnkujlphzmpa.supabase.co",
+  supabaseKey: "sb_publishable_e5ZY6wVkasa5uBi-ahhdag_w4LAIx6k",
 };

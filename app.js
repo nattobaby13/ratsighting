@@ -91,7 +91,7 @@ async function loadReports() {
     activeDataMode = "local";
     reports = loadReportsFromLocalStorage();
     setAppStatus(
-      "Using local demo mode. Add Supabase credentials in config.js to share reports publicly on GitHub Pages.",
+      "Reports are being shown from this device only right now.",
       "info"
     );
     renderAll();
@@ -113,7 +113,7 @@ async function loadReports() {
     activeDataMode = "local";
     reports = loadReportsFromLocalStorage();
     setAppStatus(
-      "Supabase could not be reached, so the app fell back to local demo data for now.",
+      "Live reports are temporarily unavailable, so only reports saved on this device are being shown right now.",
       "warning"
     );
     renderAll();
@@ -515,7 +515,7 @@ form.addEventListener("submit", async (event) => {
   if (!result.ok) {
     showInlineMessage(
       submitStatus,
-      "The report could not be saved to Supabase. Check your config.js values, schema, and row-level security policies.",
+      "Your report could not be saved right now. Please try again in a moment.",
       "error"
     );
     return;
@@ -533,7 +533,7 @@ form.addEventListener("submit", async (event) => {
     submitStatus,
     result.mode === "supabase"
       ? "Report saved to the shared community database."
-      : "Report saved in local demo mode.",
+      : "Report saved on this device.",
     "success"
   );
 });
@@ -541,13 +541,13 @@ form.addEventListener("submit", async (event) => {
 clearReportsButton.addEventListener("click", async () => {
   if (activeDataMode === "supabase") {
     window.alert(
-      "Clear local demo data only works in local mode. Shared Supabase reports should be moderated or deleted from the database."
+      "This button only clears reports saved on this device. Shared community reports are not affected."
     );
     return;
   }
 
   const confirmed = window.confirm(
-    "Clear all locally stored demo sightings from this browser?"
+    "Clear all reports saved on this device?"
   );
 
   if (!confirmed) {
@@ -557,7 +557,7 @@ clearReportsButton.addEventListener("click", async () => {
   clearLocalReports();
   renderAll();
   setAppStatus(
-    "Using local demo mode. Add Supabase credentials in config.js to share reports publicly on GitHub Pages.",
+    "Reports are being shown from this device only right now.",
     "info"
   );
 });
