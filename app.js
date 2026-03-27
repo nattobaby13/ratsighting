@@ -198,6 +198,15 @@ function getFilteredReports() {
       return reportTime >= now - 7 * 24 * 60 * 60 * 1000;
     }
 
+    if (activeTimeFilter === "this_month") {
+      const startOfMonth = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+      ).getTime();
+      return reportTime >= startOfMonth;
+    }
+
     if (activeTimeFilter === "this_year") {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
       return reportTime >= startOfYear;
