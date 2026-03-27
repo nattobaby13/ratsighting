@@ -20,7 +20,7 @@ const duplicateWarning = document.getElementById("duplicateWarning");
 const submitStatus = document.getElementById("submitStatus");
 const appStatus = document.getElementById("appStatus");
 const totalReportsEl = document.getElementById("totalReports");
-const recentReportsEl = document.getElementById("recentReports");
+const leptoReportsEl = document.getElementById("leptoReports");
 const selectedCoordsEl = document.getElementById("selectedCoords");
 
 const map = L.map("map", {
@@ -304,8 +304,11 @@ function renderReportFeed() {
 }
 
 function renderStats() {
-  totalReportsEl.textContent = String(getFilteredReports().length);
-  recentReportsEl.textContent = String(reportsInLastSevenDays());
+  const filteredReports = getFilteredReports();
+  totalReportsEl.textContent = String(filteredReports.length);
+  leptoReportsEl.textContent = String(
+    filteredReports.filter((report) => report.reportType === "leptospirosis_case").length
+  );
 }
 
 function formatOutcome(value) {
