@@ -5,7 +5,6 @@ const REPORTS_TABLE = "reports";
 
 const form = document.getElementById("reportForm");
 const jumpToFormButton = document.getElementById("jumpToForm");
-const clearReportsButton = document.getElementById("clearReports");
 const reportList = document.getElementById("reportList");
 const reportTypeInput = document.getElementById("reportType");
 const latitudeInput = document.getElementById("latitude");
@@ -161,11 +160,6 @@ async function saveReport(report) {
   activeDataMode = "supabase";
   reports.unshift(mapDbReport(data));
   return { ok: true, mode: "supabase" };
-}
-
-function clearLocalReports() {
-  reports = [];
-  saveReportsToLocalStorage();
 }
 
 function formatCoordinates(latitude, longitude) {
@@ -535,30 +529,6 @@ form.addEventListener("submit", async (event) => {
       ? "Report saved to the shared community database."
       : "Report saved on this device.",
     "success"
-  );
-});
-
-clearReportsButton.addEventListener("click", async () => {
-  if (activeDataMode === "supabase") {
-    window.alert(
-      "This button only clears reports saved on this device. Shared community reports are not affected."
-    );
-    return;
-  }
-
-  const confirmed = window.confirm(
-    "Clear all reports saved on this device?"
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  clearLocalReports();
-  renderAll();
-  setAppStatus(
-    "Reports are being shown from this device only right now.",
-    "info"
   );
 });
 
