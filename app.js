@@ -10,7 +10,8 @@ const reportTypeInput = document.getElementById("reportType");
 const timeFilterInput = document.getElementById("timeFilter");
 const latitudeInput = document.getElementById("latitude");
 const longitudeInput = document.getElementById("longitude");
-const sightedAtInput = document.getElementById("sightedAt");
+const sightedDateInput = document.getElementById("sightedDate");
+const sightedTimeInput = document.getElementById("sightedTime");
 const locationNameInput = document.getElementById("locationName");
 const dogNameInput = document.getElementById("dogName");
 const dogOutcomeInput = document.getElementById("dogOutcome");
@@ -196,6 +197,14 @@ function normalizeDateTimeForStorage(value) {
 
   const date = parseLocalDateTime(value);
   return date ? date.toISOString() : value;
+}
+
+function buildSightedAtValue() {
+  if (!sightedDateInput.value || !sightedTimeInput.value) {
+    return "";
+  }
+
+  return `${sightedDateInput.value}T${sightedTimeInput.value}`;
 }
 
 function getReportSortTime(report) {
@@ -402,10 +411,12 @@ function syncSelectedCoordinates(latitude, longitude) {
 function seedCurrentDateTime() {
   const now = new Date();
   const offset = now.getTimezoneOffset();
-  const localDate = new Date(now.getTime() - offset * 60 * 1000)
+  const localDateTime = new Date(now.getTime() - offset * 60 * 1000)
     .toISOString()
     .slice(0, 16);
-  sightedAtInput.value = localDate;
+  const [datePart, timePart] = localDateTime.split("T");
+  sightedDateInput.value = datePart;
+  sightedTimeInput.value = timePart;
 }
 
 function escapeHtml(value) {
@@ -483,7 +494,7 @@ function syncDuplicateWarning() {
   const candidate = {
     reportType: reportTypeInput.value,
     dogName: dogNameInput.value.trim(),
-    sightedAt: sightedAtInput.value,
+    sightedAt: buildSightedAtValue(),
     latitude: Number(latitudeInput.value),
     longitude: Number(longitudeInput.value),
   };
@@ -541,7 +552,8 @@ timeFilterInput.addEventListener("change", () => {
 });
 
 dogNameInput.addEventListener("input", syncDuplicateWarning);
-sightedAtInput.addEventListener("input", syncDuplicateWarning);
+sightedDateInput.addEventListener("input", syncDuplicateWarning);
+sightedTimeInput.addEventListener("input", syncDuplicateWarning);
 latitudeInput.addEventListener("input", syncDuplicateWarning);
 longitudeInput.addEventListener("input", syncDuplicateWarning);
 
@@ -566,7 +578,7 @@ form.addEventListener("submit", async (event) => {
     reportType: reportTypeInput.value,
     latitude,
     longitude,
-    sightedAt: normalizeDateTimeForStorage(sightedAtInput.value),
+    sightedAt: normalizeDateTimeForStorage(buildSightedAtValue()),
     locationName: locationNameInput.value.trim(),
     dogName: dogNameInput.value.trim(),
     dogOutcome: dogOutcomeInput.value,

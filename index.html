@@ -128,15 +128,12 @@
                 </label>
                 <input id="latitude" name="latitude" type="hidden" required />
                 <input id="longitude" name="longitude" type="hidden" required />
-                <label class="datetime-field">
-                  Date and time seen
-                  <input
-                    id="sightedAt"
-                    name="sightedAt"
-                    type="datetime-local"
-                    required
-                  />
-                </label>
+                <div class="datetime-field">
+                  <label for="sightedDate">Date seen</label>
+                  <input id="sightedDate" name="sightedDate" type="date" required />
+                  <label for="sightedTime">Time seen</label>
+                  <input id="sightedTime" name="sightedTime" type="time" required />
+                </div>
                 <label>
                   Area or landmark
                   <input
