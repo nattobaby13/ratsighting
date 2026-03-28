@@ -5,3 +5,9 @@
   for = "/*"
   [headers.values]
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/*"
+  to = "https://ratwatchsg.pages.dev/:splat"
+  status = 301
+  force = true
