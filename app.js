@@ -198,6 +198,14 @@ function normalizeDateTimeForStorage(value) {
   return date ? date.toISOString() : value;
 }
 
+function getReportSortTime(report) {
+  return (
+    parseLocalDateTime(report.sightedAt)?.getTime() ??
+    parseLocalDateTime(report.createdAt)?.getTime() ??
+    0
+  );
+}
+
 function formatDateTime(value) {
   const date = parseLocalDateTime(value);
   if (!date) {
@@ -310,10 +318,7 @@ function renderReportFeed() {
   }
 
   const cards = [...filteredReports]
-    .sort(
-      (left, right) =>
-        parseLocalDateTime(right.sightedAt) - parseLocalDateTime(left.sightedAt)
-    )
+    .sort((left, right) => getReportSortTime(right) - getReportSortTime(left))
     .map((report) => {
       const title = report.locationName ? escapeHtml(report.locationName) : "Unnamed area";
       const typeLabel =
