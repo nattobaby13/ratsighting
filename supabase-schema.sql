@@ -26,6 +26,8 @@ create index if not exists reports_moderation_status_idx on public.reports (mode
 
 alter table public.reports enable row level security;
 
+grant select, insert on public.reports to anon, authenticated;
+
 drop policy if exists "Approved reports are viewable by everyone" on public.reports;
 create policy "Approved reports are viewable by everyone"
 on public.reports

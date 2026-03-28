@@ -145,6 +145,7 @@ async function saveReport(report) {
     dog_name: report.dogName || null,
     dog_outcome: report.dogOutcome || null,
     notes: report.notes || null,
+    moderation_status: report.moderationStatus || "approved",
   };
 
   const { data, error } = await supabaseClient
@@ -586,6 +587,15 @@ form.addEventListener("submit", async (event) => {
     moderationStatus: "approved",
   };
 
+  if (!report.sightedAt) {
+    showInlineMessage(
+      submitStatus,
+      "Please choose both a date and time for the report.",
+      "error"
+    );
+    return;
+  }
+
   const duplicates = findPossibleDuplicates(report);
   if (duplicates.length) {
     const confirmed = window.confirm(
@@ -601,9 +611,14 @@ form.addEventListener("submit", async (event) => {
 
   const result = await saveReport(report);
   if (!result.ok) {
+    const errorMessage =
+      result.error?.message ||
+      result.error?.details ||
+      result.error?.hint ||
+      "Your report could not be saved right now. Please try again in a moment.";
     showInlineMessage(
       submitStatus,
-      "Your report could not be saved right now. Please try again in a moment.",
+      errorMessage,
       "error"
     );
     return;
