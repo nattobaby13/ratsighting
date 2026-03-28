@@ -27,10 +27,12 @@ const selectedCoordsEl = document.getElementById("selectedCoords");
 const map = L.map("map", {
   zoomControl: true,
   minZoom: 11,
-  maxZoom: 19,
+  maxZoom: 18,
 }).setView(SINGAPORE_CENTER, DEFAULT_ZOOM);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18,
+  maxNativeZoom: 18,
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
