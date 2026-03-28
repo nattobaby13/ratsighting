@@ -57,6 +57,7 @@ let reports = [];
 let possibleDuplicates = [];
 let activeDataMode = "local";
 let activeTimeFilter = "all_time";
+let hasSelectedCoordinates = false;
 
 function loadReportsFromLocalStorage() {
   try {
@@ -401,12 +402,25 @@ function syncSelectedCoordinates(latitude, longitude) {
   latitudeInput.value = Number(latitude).toFixed(6);
   longitudeInput.value = Number(longitude).toFixed(6);
   selectedCoordsEl.textContent = formatCoordinates(latitude, longitude);
+  hasSelectedCoordinates = true;
 
   if (selectedMarker) {
     map.removeLayer(selectedMarker);
   }
 
   selectedMarker = L.marker([latitude, longitude]).addTo(map);
+}
+
+function clearSelectedCoordinates() {
+  latitudeInput.value = "";
+  longitudeInput.value = "";
+  selectedCoordsEl.textContent = "None yet";
+  hasSelectedCoordinates = false;
+
+  if (selectedMarker) {
+    map.removeLayer(selectedMarker);
+    selectedMarker = null;
+  }
 }
 
 function seedCurrentDateTime() {
@@ -565,10 +579,10 @@ form.addEventListener("submit", async (event) => {
   const latitude = Number(latitudeInput.value);
   const longitude = Number(longitudeInput.value);
 
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+  if (!hasSelectedCoordinates || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
     showInlineMessage(
       submitStatus,
-      "Please select a valid point on the map or enter valid coordinates.",
+      "Please click on the map to drop a pin before saving your report.",
       "error"
     );
     return;
@@ -629,7 +643,7 @@ form.addEventListener("submit", async (event) => {
   seedCurrentDateTime();
   reportTypeInput.value = "rat_sighting";
   syncCaseFields();
-  syncSelectedCoordinates(latitude, longitude);
+  clearSelectedCoordinates();
   possibleDuplicates = [];
   hideInlineMessage(duplicateWarning);
   showInlineMessage(
