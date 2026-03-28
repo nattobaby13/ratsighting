@@ -574,7 +574,25 @@ select:focus {
 .datetime-field {
   display: grid;
   gap: 8px;
+  width: 100%;
   min-width: 0;
+  overflow: hidden;
+}
+
+.datetime-field label {
+  min-width: 0;
+}
+
+.datetime-field input[type="date"],
+.datetime-field input[type="time"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 @media (max-width: 720px) {
@@ -618,10 +636,18 @@ select:focus {
     font-size: 0.9rem;
   }
 
+  #reportPanel,
+  #reportForm {
+    min-width: 0;
+    overflow: hidden;
+  }
+
   .datetime-field input[type="date"],
   .datetime-field input[type="time"] {
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     padding-right: 10px;
-    font-size: 0.95rem;
+    font-size: 16px;
   }
 }
