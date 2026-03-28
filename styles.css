@@ -349,6 +349,7 @@ textarea,
 select {
   width: 100%;
   min-width: 0;
+  max-width: 100%;
   border-radius: 14px;
   border: 1px solid rgba(31, 42, 31, 0.15);
   background: rgba(255, 255, 255, 0.86);
@@ -570,6 +571,15 @@ select:focus {
   }
 }
 
+.datetime-field {
+  min-width: 0;
+}
+
+.datetime-field input[type="datetime-local"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
 @media (max-width: 720px) {
   .page-shell {
     width: min(100% - 18px, 100%);
@@ -609,5 +619,11 @@ select:focus {
   .report-notes,
   label {
     font-size: 0.9rem;
+  }
+
+  .datetime-field input[type="datetime-local"] {
+    width: 100%;
+    padding-right: 10px;
+    font-size: 0.95rem;
   }
 }
