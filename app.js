@@ -168,28 +168,50 @@ function formatCoordinates(latitude, longitude) {
   return `${Number(latitude).toFixed(6)}, ${Number(longitude).toFixed(6)}`;
 }
 
+function parseLocalDateTime(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
+    const [datePart, timePart] = value.split("T");
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hours, minutes] = timePart.split(":").map(Number);
+    return new Date(year, month - 1, day, hours, minutes);
+  }
+
+  const fallback = new Date(value);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function normalizeDateTimeForStorage(value) {
+  const date = parseLocalDateTime(value);
+  return date ? date.toISOString() : value;
+}
+
 function formatDateTime(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
+  const date = parseLocalDateTime(value);
+  if (!date) {
     return "Unknown time";
   }
 
   return new Intl.DateTimeFormat("en-SG", {
     dateStyle: "medium",
     timeStyle: "short",
+    timeZone: "Asia/Singapore",
   }).format(date);
 }
 
 function reportsInLastSevenDays() {
   const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  return reports.filter((report) => new Date(report.sightedAt).getTime() >= sevenDaysAgo).length;
+  return reports.filter((report) => parseLocalDateTime(report.sightedAt)?.getTime() >= sevenDaysAgo).length;
 }
 
 function getFilteredReports() {
   const now = Date.now();
 
   return reports.filter((report) => {
-    const reportTime = new Date(report.sightedAt).getTime();
+    const reportTime = parseLocalDateTime(report.sightedAt)?.getTime();
     if (!Number.isFinite(reportTime)) {
       return false;
     }
@@ -279,7 +301,10 @@ function renderReportFeed() {
   }
 
   const cards = [...filteredReports]
-    .sort((left, right) => new Date(right.sightedAt) - new Date(left.sightedAt))
+    .sort(
+      (left, right) =>
+        parseLocalDateTime(right.sightedAt) - parseLocalDateTime(left.sightedAt)
+    )
     .map((report) => {
       const title = report.locationName ? escapeHtml(report.locationName) : "Unnamed area";
       const typeLabel =
@@ -415,7 +440,7 @@ function findPossibleDuplicates(candidate) {
   }
 
   const normalizedDogName = candidate.dogName.trim().toLowerCase();
-  const candidateTime = new Date(candidate.sightedAt).getTime();
+  const candidateTime = parseLocalDateTime(candidate.sightedAt)?.getTime();
 
   return reports.filter((report) => {
     if (report.reportType !== "leptospirosis_case" || !report.dogName) {
@@ -427,7 +452,7 @@ function findPossibleDuplicates(candidate) {
       return false;
     }
 
-    const reportTime = new Date(report.sightedAt).getTime();
+    const reportTime = parseLocalDateTime(report.sightedAt)?.getTime();
     const withinThirtyDays = Math.abs(reportTime - candidateTime) <= 30 * 24 * 60 * 60 * 1000;
     const nearby = distanceInMeters(
       candidate.latitude,
@@ -527,7 +552,7 @@ form.addEventListener("submit", async (event) => {
     reportType: reportTypeInput.value,
     latitude,
     longitude,
-    sightedAt: sightedAtInput.value,
+    sightedAt: normalizeDateTimeForStorage(sightedAtInput.value),
     locationName: locationNameInput.value.trim(),
     dogName: dogNameInput.value.trim(),
     dogOutcome: dogOutcomeInput.value,
