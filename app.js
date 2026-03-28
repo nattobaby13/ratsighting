@@ -174,10 +174,11 @@ function parseLocalDateTime(value) {
   }
 
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
-    const [datePart, timePart] = value.split("T");
-    const [year, month, day] = datePart.split("-").map(Number);
-    const [hours, minutes] = timePart.split(":").map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
+    return new Date(`${value}:00+08:00`);
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)) {
+    return new Date(`${value}+08:00`);
   }
 
   const fallback = new Date(value);
@@ -185,6 +186,14 @@ function parseLocalDateTime(value) {
 }
 
 function normalizeDateTimeForStorage(value) {
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
+    return `${value}:00+08:00`;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)) {
+    return `${value}+08:00`;
+  }
+
   const date = parseLocalDateTime(value);
   return date ? date.toISOString() : value;
 }
